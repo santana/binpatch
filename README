@@ -1,0 +1,159 @@
+$Id: README,v 1.1 2005/12/05 23:54:52 convexo Exp $
+
+The binpatch framework
+
+Table of contents
+
+1. What is binpatch
+2. Why binary patches
+3. Using binpatch
+	3.1 Maintenance
+	3.2 Building a binary patch
+	3.3 Installation
+
+== 1. What is binpatch ==
+
+binpatch is a framework for creating binary patches for OpenBSD on all
+platforms in a semi-automatic way. It can automatically download the
+source patches published on http://www.openbsd.org/errata.html, apply them,
+build them, and package the result into binary patches.
+
+These binary patches in turn can be distributed across a network and applied
+easily to any number of servers with a custom script. Since they are just
+simple compressed tar balls with the programs/libraries patched, applied is
+as easy as tar xzpf binpatch-3.8-i386-001.tgz -C /
+
+== 2. Why binary patches ==
+
+Binary patches is a convenient way to keep your servers up to date with
+security and reliability patches.  Unlike the traditional method of patching
+the source tree, applying binary patches doesn't need extra disk space to
+hold the whole source tree, compilers or a powerful enough CPU to build the
+programs patched in a reasonable period of time.
+
+== 3. Using binpatch ==
+
+The binpatch framework resemblances the OpenBSD ports subsystem in many ways.
+It's no coincidence since binpatch took ideas from the OpenBSD ports
+subsystem.
+
+binpatch is a make script with routines that automate downloading, applying,
+building and packaging binary patches. Using binpatch means executing the
+following tasks: maintenance, building and installation.
+
+Maintenance and building are not intended for end users of binary patches. If
+you are insterested only on installing a binary patch you can safely skip the
+following two sections.
+
+=== 3.1 Maintenance ===
+
+The magic in binpatch must be invoked by a custom Makefile that informs
+binpatch about the patches available and how they should be built. It's similar
+as making a port, where you need to write a Makefile with directions about how
+a port must be built. A sample self-documented Makefile is included in this
+distribution. After editing a Makefile, we have to build the patched files.
+
+This is the sequence of targets:
+
+	init: "fake" install of a complete OpenBSD system
+	extract: unpacks the OpenBSD sources
+	patch: downloads the patch given from the master site and applies it
+	build: builds the programs/libraries affected
+	plist: creates the PLIST with the names of the files modified
+
+There's no fetch target. binpatch doesn't currently download neither the
+installation sets nor the sources. You have to put them manually under the
+required directory.
+
+The binpatch directory structure must be like this:
+
+binpatch/
+	|
+	+--- Makefile
+	|
+	+--- bsd.binpatch.mk
+	|
+	+--- distfiles/
+	|	|
+	|	+--- i386/  (installation sets here)
+	|	|
+	|	+--- src.tar.gz
+	|	|
+	|	+--- sys.tar.gz
+	|
+	+--- packages/
+	|
+	+--- patches/
+	|	|
+	|	+--- common/
+	|	|
+	|	+--- i386/
+	|
+	+--- pkg/
+	|	|
+	|	+--- PLIST-i386-001 (PLIST files here)
+	|
+	+--- work-binpatch-3.6/
+		|
+		+--- fake/
+		|
+		+--- obj/
+		|
+		+--- src/
+
+All directories, except for distfiles, are created by binpatch.
+
+Building the patches files is as easy as:
+
+# make PATCH="001" build
+
+or:
+
+# make PATCH="001"
+
+since build is the default target. build will run all the previous steps
+needed.
+
+After that, run the plist target:
+
+# make PATCH="001" plist
+
+You'll get a PLIST file under pkg with the name of the modified files.
+Builder of binary patches will use this file to package binary patches.
+
+WARNING: binpatch is not aware of any dependency between patches. You have
+to build them sequentially. DO NOT clean anything.
+
+=== 3.2 Building a binary patch ===
+
+# make PATCH="001" package
+
+That's it. This will create a binpatch-${OSREV}-${ARCH}-001.tgz file under the
+pkg directory.
+
+=== 3.3 Installation ===
+
+From within the binpatch subdirectory and after building the binary patch:
+
+# make PATCH="001" install
+
+or if you got the binary patch from somewhere else:
+
+# tar xzpf binpatch-${OSREV}-${ARCH}-001.tgz -C /
+
+binpatch doesn't provide a way to keep track of patches applied, but if you
+need it, you can always write a simple script to do it:
+
+patch_add:
+#!/bin/sh
+tar xzpf $1 -C /
+mkdir -p /var/db/patches/`basename "$1" .tgz`
+
+patch_info:
+#!/bin/sh
+ls /var/db/patches/
+
+patch_add could be modified to backup the files listed by tar tf $1 into
+/var/db/patches; this would make patch_delete possible.
+
+WARNING: Binary patches are incremental and cannot be uninstalled.

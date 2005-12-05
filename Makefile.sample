@@ -1,0 +1,97 @@
+# $Id: Makefile.sample,v 1.1 2005/12/05 23:54:52 convexo Exp $
+
+#===========================================================================
+#
+# This is a sample Makefile
+# 
+# Makefiles in binpatch describe the way each patch is built for a specific
+# release. The instructions for building patches should be taken from the
+# patches themselves (they are written at the top of each patch).
+#
+# bsd.binpatch.mk provides shortcuts to common instructions like make obj or
+# make depend in the form of variables like ${_obj} or ${_depend} that saves
+# you time and effort, setting the ${MAKE_ENV} variable for you, needed by
+# binpatch.
+#
+# A _kernel target is provided too for convenience. It's kind of a Makefile
+# macro that defines the instructions needed to build a kernel so you don't
+# have to write them every time.
+#
+# Don't forget to include bsd.binpatch.mk at the end of the file.
+# 
+# Gerardo Santana <gerardo.santana@gmail.com>
+# 
+#===========================================================================
+
+# PATCH_* variables hold the list of patch file names without the extension
+# as they appear in the FTP site. There's one variable for architecture
+# specific patches: PATCH_I386, PATCH_SPARC, etc. The architecture name is
+# the uppercase of the output of uname -m. PATCH_COMMON must be used for
+# patches that apply to all architectures.
+
+# List of patches for all architectures
+PATCH_COMMON=001_cvs 002_getsockopt 003_sudo 004_libz 005_libz 006_nat-t
+
+# List of patches for i386 only
+PATCH_I386=
+
+# bin, sbin and libc are not patches, and not always needed. They are here
+# to serve as a source for a patch target if its instructions includes, for
+# example: "And then rebuild and install libc"
+
+bin:
+	cd ${WRKSRC}/bin && (${_obj}; ${_cleandir}; ${_depend} && ${_build})
+
+sbin:
+	cd ${WRKSRC}/sbin && (${_obj}; ${_cleandir}; ${_depend} && ${_build})
+
+libc:
+	cd ${WRKSRC}/lib/libc && \
+	(${_obj}; ${_cleandir}; ${_depend} && ${_build})
+
+#===========================================================================
+# The patch targets start here.
+#
+# Care should be taken for writing valid rules for make.
+# The instructions must be taken from the top of each patch file, with some
+# rewrites:
+#
+# - Paths relative to src/ must be made relative to ${WRKSRC}/
+# - make targets must be changed for their counterparts provided by binpatch:
+#	make obj:		${_obj}
+#	make cleandir:		${_cleandir}
+#	make depend:		${_depend}
+#	make install:		${_install}
+#	make && make install:	${_build}
+#
+#	make -f Makefile.bsd-wrapper obj:		${_obj_wrp}
+#	make -f Makefile.bsd-wrapper cleandir:		${_cleandir_wrp}
+#	make -f Makefile.bsd-wrapper depend:		${_depend_wrp}
+#	make -f Makefile.bsd-wrapper && 
+#		make -f Makefile.bsd-wrapper install:	${_build_wrp}
+#	make -f Makefile.bsd-wrapper install:		${_install_wrp}
+#
+#
+
+002_getsockopt: _kernel
+
+001_cvs:
+	cd ${WRKSRC}/gnu/usr.bin/cvs && \
+	(${_obj_wrp}; ${_build_wrp})
+
+003_sudo:
+	cd ${WRKSRC}/usr.bin/sudo && \
+	(${_obj}; ${_depend}; ${_build})
+004_libz:
+	cd ${WRKSRC}/lib/libz && \
+	(${_obj}; ${_depend}; ${_build})
+
+005_libz:
+	cd ${WRKSRC}/lib/libz && \
+	(${_obj}; ${_depend}; ${_build})
+
+006_nat-t:
+	cd ${WRKSRC}/sbin/isakmpd && \
+	(${_obj}; ${_depend}; ${_build})
+
+.include "bsd.binpatch.mk"
