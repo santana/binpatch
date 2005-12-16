@@ -1,4 +1,4 @@
-$Id: README,v 1.1 2005/12/05 23:54:52 convexo Exp $
+$Id: README,v 1.2 2005/12/16 13:36:43 convexo Exp $
 
 The binpatch framework
 
@@ -10,6 +10,7 @@ Table of contents
 	3.1 Maintenance
 	3.2 Building a binary patch
 	3.3 Installation
+4. Download
 
 == 1. What is binpatch ==
 
@@ -157,3 +158,11 @@ patch_add could be modified to backup the files listed by tar tf $1 into
 /var/db/patches; this would make patch_delete possible.
 
 WARNING: Binary patches are incremental and cannot be uninstalled.
+
+== 4. Download ==
+
+binpatch is freely available under the BSD license at
+http://sf.net/projects/openbsdbinpatch
+
+----------------------------------------------------------------------------
+Gerardo Santana <gerardo.santana@gmail.com>
