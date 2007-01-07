@@ -1,5 +1,5 @@
-# $Id: bsd.binpatch.mk,v 1.1 2005/12/05 23:54:52 convexo Exp $
-# Copyright (c) 2002-2005, Gerardo Santana Gómez Garrido <gerardo.santana@gmail.com>
+# $Id: bsd.binpatch.mk,v 1.2 2007/01/07 22:34:26 convexo Exp $
+# Copyright (c) 2002-2007, Gerardo Santana Gómez Garrido <gerardo.santana@gmail.com>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -74,12 +74,20 @@ MAKE_ENV:= env DESTDIR=${DESTDIR} BSDOBJDIR=${BSDOBJDIR} BSDSRCDIR=${BSDSRCDIR} 
 # ============================================== SPECIAL TARGETS & SHORTCUTS
 # Subroutine to include for building a kernel patch
 _kernel: .USE
+.for _kern in ${KERNEL}
 	cd ${WRKSRC}/sys/arch/${ARCH}/conf && \
-	config ./${KERNEL} && \
-	cd ../compile/${KERNEL} && \
+	config ./${_kern} && \
+	cd ../compile/${_kern} && \
 	${MAKE_ENV} make depend && \
 	${MAKE_ENV} make && \
-	cp -p bsd ${WRKINST}
+	if [ ${_kern} = "GENERIC" ]; then \
+	cp -p bsd ${WRKINST}; \
+	elif [ ${_kern} = "GENERIC.MP" ]; then \
+	cp -p bsd ${WRKINST}/bsd.mp; \
+	else \
+	cp -p bsd ${WRKINST}/bsd.${_kern}; \
+	fi
+.endfor
 
 # Shortcuts
 _obj=${MAKE_ENV} make obj
