@@ -1,4 +1,4 @@
-# $Id: bsd.binpatch.mk,v 1.2 2007/01/07 22:34:26 convexo Exp $
+# $Id: bsd.binpatch.mk,v 1.3 2007/01/08 14:47:03 convexo Exp $
 # Copyright (c) 2002-2007, Gerardo Santana Gómez Garrido <gerardo.santana@gmail.com>
 # All rights reserved.
 #
@@ -173,6 +173,16 @@ BUILD_COOKIES	+= ${BUILD_COOKIE_${_p}}
 extract: ${EXTRACT_COOKIE}
 
 ${EXTRACT_COOKIE}:
+.if defined(CDSRC)
+	@if [ ! -f ${DISTDIR}/src.tar.gz ]; then \
+	echo "+------------------------";\
+	echo "|"; \
+	echo "| Error: copy src.tar.gz from CD3 to ${DISTDIR}"; \
+	echo "|"; \
+	echo "+------------------------";\
+	exit 1; \
+	fi
+.else
 	@if [ ! -f ${DISTDIR}/src.tar.gz -o ! -f ${DISTDIR}/sys.tar.gz ]; then \
 	echo "+------------------------";\
 	echo "|"; \
@@ -182,12 +192,15 @@ ${EXTRACT_COOKIE}:
 	echo "+------------------------";\
 	exit 1; \
 	fi
+.endif
 	@echo "===>   Extracting sources"
 	rm -rf ${WRKOBJ} ${WRKSRC}
 	mkdir -p ${WRKOBJ}
-	mkdir -p ${WRKSRC} && \
-	tar xzpf ${DISTDIR}/src.tar.gz -C ${WRKSRC} && \
-	tar xzpf ${DISTDIR}/sys.tar.gz -C ${WRKSRC} && \
+	mkdir -p ${WRKSRC}
+	tar xzpf ${DISTDIR}/src.tar.gz -C ${WRKSRC}
+.if ! defined(CDSRC)
+	tar xzpf ${DISTDIR}/sys.tar.gz -C ${WRKSRC}
+.endif
 	touch -f ${.TARGET}
 
 # Extracts the OpenBSD installation files
