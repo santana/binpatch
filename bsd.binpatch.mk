@@ -1,4 +1,4 @@
-# $Id: bsd.binpatch.mk,v 1.4 2007/01/09 01:03:23 convexo Exp $
+# $Id: bsd.binpatch.mk,v 1.5 2007/01/09 01:58:44 convexo Exp $
 # Copyright (c) 2002-2007, Gerardo Santana Gómez Garrido <gerardo.santana@gmail.com>
 # All rights reserved.
 #
@@ -70,6 +70,14 @@ DESTDIR:=${WRKINST}
 BSDOBJDIR=${WRKOBJ}
 BSDSRCDIR:=${WRKSRC}
 MAKE_ENV:= env DESTDIR=${DESTDIR} BSDOBJDIR=${BSDOBJDIR} BSDSRCDIR=${BSDSRCDIR} INSTALL_COPY=-C
+
+# Signing variables
+SIGNKEY?=NO
+.if defined(SIGNPASS) && exists(${SIGNPASS})
+SIGNCMD := -f ${SIGNPASS} ${SIGNKEY}
+.else
+SIGNCMD := ${SIGNKEY}
+.endif
 
 # ============================================== SPECIAL TARGETS & SHORTCUTS
 # Subroutine to include for building a kernel patch
@@ -239,6 +247,23 @@ package: build
 	@echo "===>  Building package for ${FULLPKGNAME} in ${PACKAGEDIR}";
 	@cat ${PKGDIR}/PLIST-${ARCH}-$${PATCH} | \
 	(cd ${WRKINST} && xargs tar czpf ${PACKAGEDIR}/${FULLPKGNAME}.tgz) 
+	@if [ "${SIGNKEY}" != "NO" ]; then \
+	    if [ ! -f "${SIGNKEY}" ]; then \
+	        echo "+-------------------------"; \
+	        echo "|"; \
+	        echo "| Key file (${SIGNKEY}) not found."; \
+	        echo "| Package will not be signed."; \
+	        echo "|"; \
+	        echo "+-------------------------"; \
+	    else \
+	        echo "===>  Signing package with ${SIGNKEY}"; \
+	        gzsig sign ${SIGNCMD} ${PACKAGEDIR}/${FULLPKGNAME}.tgz; \
+	        if [ -f "${SIGNKEY}.pub" ]; then \
+	          echo "===>  Verifying package with ${SIGNKEY}.pub"; \
+	          gzsig verify ${SIGNKEY}.pub ${PACKAGEDIR}/${FULLPKGNAME}.tgz;\
+	        fi; \
+	    fi; \
+	fi
 	@echo "+-------------------------"
 	@echo "|"
 	@echo "| The binary patch has been created in"
