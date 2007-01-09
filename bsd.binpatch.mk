@@ -1,4 +1,4 @@
-# $Id: bsd.binpatch.mk,v 1.3 2007/01/08 14:47:03 convexo Exp $
+# $Id: bsd.binpatch.mk,v 1.4 2007/01/09 01:03:23 convexo Exp $
 # Copyright (c) 2002-2007, Gerardo Santana Gómez Garrido <gerardo.santana@gmail.com>
 # All rights reserved.
 #
@@ -93,6 +93,7 @@ _kernel: .USE
 _obj=${MAKE_ENV} make obj
 _cleandir=${MAKE_ENV} make cleandir
 _depend=${MAKE_ENV} make depend
+_includes=${MAKE_ENV} make includes
 _build=${MAKE_ENV} make && ${_install} 
 _install=${MAKE_ENV} make install
 
