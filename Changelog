@@ -1,0 +1,24 @@
+1.1.0
+------------------
+New features:
+	  Contributed by Mike Erdely <mike at erdelynet dot com>:
+	* Set the CDSRC variable to avoid checking for sys.tar.gz (as is the
+	  case when the sources come from the CD).
+	* Ability to build multiple kernels.
+	* Ability to sign binary patches with gzsig.
+
+
+	* New target _includes added. Contributed by
+	  Mike Erdely <mike at erdelynet dot com>,
+	  Lloyd <lloydr at megapathdsl.net> and
+	  z0mbix <z0mbix at gmail dot com>
+
+Bugs fixed:
+	* Building on macpcc failed because it was looking for the kernel
+	  directory "powerpc" instead of "macppc".
+	  Fixed by z0mbix <z0mbix at gmail dot com>
+
+
+1.0.0 2005-12-10
+------------------
+ Initial release
