@@ -1,5 +1,4 @@
-# $Id: bsd.binpatch.mk,v 1.5 2007/01/09 01:58:44 convexo Exp $
-# Copyright (c) 2002-2007, Gerardo Santana Gómez Garrido <gerardo.santana@gmail.com>
+# Copyright (c) 2002-2008, Gerardo Santana Gómez Garrido <gerardo.santana@gmail.com>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
