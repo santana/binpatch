@@ -1,6 +1,4 @@
-$Id: README,v 1.3 2005/12/16 23:28:49 convexo Exp $
-
-The binpatch framework
+= The binpatch framework
 
 Table of contents
 
@@ -12,7 +10,7 @@ Table of contents
 	3.3 Installation
 4. Download
 
-== 1. What is binpatch ==
+== 1. What is binpatch
 
 binpatch is a framework for creating binary patches for OpenBSD on all
 platforms in a semi-automatic way. It can automatically download the
@@ -26,7 +24,7 @@ as easy as:
 
 # tar xzpf binpatch-3.8-i386-001.tgz -C /
 
-== 2. Why binary patches ==
+== 2. Why binary patches
 
 Binary patches is a convenient way to keep your servers up to date with
 security and reliability patches.  Unlike the traditional method of patching
@@ -34,7 +32,7 @@ the source tree, applying binary patches doesn't need extra disk space to
 hold the whole source tree, compilers or a powerful enough CPU to build the
 programs patched in a reasonable period of time.
 
-== 3. Using binpatch ==
+== 3. Using binpatch
 
 The binpatch framework resemblances the OpenBSD ports subsystem in many ways.
 It's no coincidence since binpatch took ideas from the OpenBSD ports
@@ -48,7 +46,7 @@ Maintenance and building are not intended for end users of binary patches. If
 you are insterested only on installing a binary patch you can safely skip the
 following two sections.
 
-=== 3.1 Maintenance ===
+=== 3.1 Maintenance
 
 The magic in binpatch must be invoked by a custom Makefile that informs
 binpatch about the patches available and how they should be built. It's similar
@@ -127,14 +125,14 @@ Builders of binary patches will use this file to package binary patches.
 WARNING: binpatch is not aware of any dependency between patches. You have
 to build them sequentially. DO NOT clean anything.
 
-=== 3.2 Building a binary patch ===
+=== 3.2 Building a binary patch
 
 # make PATCH="001" package
 
 That's it. This will create a binpatch-${OSREV}-${ARCH}-001.tgz file under the
 pkg directory.
 
-=== 3.3 Installation ===
+=== 3.3 Installation
 
 From within the binpatch subdirectory and after building the binary patch:
 
@@ -161,10 +159,7 @@ patch_add could be modified to backup the files listed by tar tf $1 into
 
 WARNING: Binary patches are incremental and cannot be uninstalled.
 
-== 4. Download ==
+== 4. Download
 
 binpatch is freely available under the BSD license at
 http://sf.net/projects/openbsdbinpatch
-
-----------------------------------------------------------------------------
-Gerardo Santana <gerardo.santana@gmail.com>
