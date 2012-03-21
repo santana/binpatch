@@ -50,7 +50,7 @@ following two sections.
 
 The magic in binpatch must be invoked by a custom Makefile that informs
 binpatch about the patches available and how they should be built. It's similar
-as making a port, where you need to write a Makefile with directions about how
+to making a port, where you need to write a Makefile with directions about how
 a port must be built. A sample self-documented Makefile is included in this
 distribution. After editing a Makefile, we have to build the patched files.
 

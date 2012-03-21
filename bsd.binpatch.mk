@@ -1,4 +1,4 @@
-# Copyright (c) 2002-2008, Gerardo Santana Gómez Garrido <gerardo.santana@gmail.com>
+# Copyright (c) 2002-2012, Gerardo Santana Gómez Garrido <gerardo.santana@gmail.com>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -218,7 +218,7 @@ ${INIT_COOKIE}:
 	@echo "===>   Creating fake install tree"
 	rm -rf ${WRKINST}
 	mkdir -p ${WRKINST}
-.for _pkg in base comp etc game man misc
+.for _pkg in base comp etc game man
 	tar xzpf ${DISTDIR}/${ARCH}/${_pkg}${OSrev}.tgz -C ${WRKINST}
 .endfor
 	cp -p ${DISTDIR}/${ARCH}/bsd ${WRKINST} && \
